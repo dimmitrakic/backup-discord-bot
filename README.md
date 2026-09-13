@@ -7,12 +7,12 @@ Backup Bot is a Discord bot with one focused job: protect your server's structur
 
 1. Clone the repository:
 
-git clone 
+git clone https://github.com/dimmitrakic/backup-discord-bot
 
 
 2. Navigate to the bot directory:
 
-cd backup-bot
+cd backup-discord-bot
 
 
 3. Install dependencies:
