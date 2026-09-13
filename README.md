@@ -1,63 +1,67 @@
 # Backup Bot
 
-A minimal Discord bot with exactly one feature: back up and restore a
-server's roles and channels. Pulled out of a larger bot's `/backup`
-command so you can run it on its own.
+## Description
+Backup Bot is a Discord bot with one focused job: protect your server's structure. It snapshots every role and channel — including categories and permission overwrites — into a backup file, and can restore anything that's missing later by matching names. That means it still works even after a full server nuke wipes out all the original role/channel IDs, since restore rebuilds by name rather than ID.
 
-## Layout
+## Installation
 
-```
-.
-├── index.js              ← main file / entry point (auto-registers the command on every boot)
-├── config.js
-├── package.json
-├── commands/
-│   └── backup.js         ← /backup create|list|restore
-├── backup/
-│   └── backupManager.js  ← the actual snapshot/restore logic
-├── security/
-│   └── permissions.js    ← staff (create/list) vs owner (restore)
-└── data/backups/         ← where backup JSON files are saved (gitignored)
-```
+1. Clone the repository:
 
-## Setup
+git clone 
 
-```bash
+
+2. Navigate to the bot directory:
+
+cd backup-bot
+
+
+3. Install dependencies:
+
 npm install
-cp .env.example .env
-```
 
-Fill in `.env`:
 
-| Variable | Required | Notes |
-|---|---|---|
-| `DISCORD_TOKEN` | ✅ | From the Bot tab of your application. **Never share this or commit it.** |
-| `CLIENT_ID` | ✅ | Application ID, from the General Information tab. |
-| `GUILD_ID` | optional | Set while developing — the command registers instantly to one server. Remove for global (prod). |
-| `STAFF_IDS` | recommended | Comma-separated user IDs allowed to run `/backup create` and `/backup list`. |
-| `OWNER_IDS` | recommended | Comma-separated user IDs allowed to run `/backup restore` — a bigger blast radius than create/list, so keep this a smaller/more trusted set (or the same list, your call). |
+4. Configure environment variables:
+   * Create a `.env` file in the project directory.
+   * Add your bot token and permission settings:
 
-Then just start it — the command registers itself automatically every time it boots:
+DISCORD_TOKEN=YOUR_DISCORD_BOT_TOKEN
+CLIENT_ID=YOUR_BOT_CLIENT_ID
+GUILD_ID=YOUR_TEST_SERVER_ID
+STAFF_ID=USER_ID
+OWNER_ID=USER_ID
 
-```bash
-npm start
-```
 
-## What it does
+## Usage
 
-- **`/backup create`** (staff) — snapshots every role and channel (with categories and permission overwrites) to a JSON file in `data/backups/<guild-id>/`.
-- **`/backup list`** (staff) — shows available backups for this server, most recent first.
-- **`/backup restore [filename]`** (owner) — recreates anything from that snapshot that's currently **missing**, matched by **name** — existing roles/channels with the same name are left untouched. This is what makes it useful after a nuke: even though the old IDs are gone, restore rebuilds everything by name, permissions included. Defaults to the most recent backup if no filename is given.
+1. Start the bot:
 
-It does **not** restore message history, emojis, webhooks, or exact role/channel ordering — structure and permissions only.
+node index.js
 
-## Required bot permissions / intents
 
-When generating the invite link in the Discord Developer Portal, enable:
-- **Bot permissions:** Manage Roles, Manage Channels, Send Messages, Read Message History
-- No privileged gateway intents are needed — this bot only reads/writes server structure, not messages or members.
+2. Invite the bot to your server with Manage Roles and Manage Channels permissions.
+3. Run `/backup create` to take a snapshot, `/backup list` to see saved backups, and `/backup restore` to rebuild anything missing.
 
-## Notes
+## Features
 
-- Backups are stored on disk under `data/` (gitignored) and persist across restarts, but **not** across a fresh deploy if your host wipes the filesystem — download/back up that folder somewhere durable if you want long-term retention.
-- `STAFF_IDS`/`OWNER_IDS` here are plain user ID lists (not Discord roles) to keep this bot dependency-free — if you'd rather gate by role, that's a small change to `security/permissions.js`.
+* `/backup create` — snapshots every role and channel (with categories and permission overwrites) to a file.
+* `/backup list` — shows available backups for the server, most recent first.
+* `/backup restore` — recreates anything missing from a backup, matched by name, so existing roles/channels are left untouched.
+* Commands auto-register with Discord on every startup — no separate deploy step.
+* Staff/owner access controlled entirely via environment variables.
+
+## Technologies
+
+* [Node.js](https://nodejs.org/)
+* [discord.js](https://discord.js.org/)
+* [dotenv](https://www.npmjs.com/package/dotenv)
+
+## Contributing
+Contributions are welcome! To contribute:
+
+1. Fork the repository.
+2. Create a new branch for your feature or bugfix.
+3. Commit your changes.
+4. Open a pull request describing your changes.
+
+## License
+This project is licensed under the Apache License 2.0. See the LICENSE file for details.
