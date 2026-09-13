@@ -12,7 +12,7 @@ git clone https://github.com/dimmitrakic/backup-discord-bot
 
 2. Navigate to the bot directory:
 
-cd backup-bot
+cd backup-discord-bot
 
 
 3. Install dependencies:
