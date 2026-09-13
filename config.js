@@ -8,11 +8,6 @@ function required(name) {
   return value.trim();
 }
 
-/**
- * Pulls a bare Discord snowflake ID out of a value that might have extra
- * junk around it — quotes from a panel's env editor, or someone pasting a
- * user mention like <@123...> instead of the raw ID.
- */
 function extractId(value) {
   if (!value) return null;
   const match = value.match(/\d{15,25}/);
@@ -36,8 +31,7 @@ export const config = {
   ownerIds: optionalIdList('OWNER_IDS'),
 };
 
-// Basic sanity check so a copy-pasted token with surrounding quotes/spaces
-// doesn't silently fail to authenticate.
+
 if (/["']/.test(config.token)) {
   throw new Error('[config] DISCORD_TOKEN looks like it has quotes in it — remove them from .env');
 }
